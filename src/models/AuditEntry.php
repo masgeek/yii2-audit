@@ -13,21 +13,21 @@ use yii\db\Expression;
  * AuditEntry
  * @package bedezign\yii2\audit\models
  *
- * @property int               $id
- * @property string            $created
- * @property float             $duration
- * @property int               $user_id        0 means anonymous
- * @property string            $ip
- * @property string            $route
- * @property int               $memory_max
- * @property string            $request_method
- * @property string            $ajax
+ * @property int $id
+ * @property string $created
+ * @property float $duration
+ * @property int $user_id        0 means anonymous
+ * @property string $ip
+ * @property string $route
+ * @property int $memory_max
+ * @property string $request_method
+ * @property string $ajax
  *
- * @property AuditError[]      $linkedErrors
+ * @property AuditError[] $linkedErrors
  * @property AuditJavascript[] $javascripts
- * @property AuditTrail[]      $trails
- * @property AuditMail[]       $mails
- * @property AuditData[]       $data
+ * @property AuditTrail[] $trails
+ * @property AuditMail[] $mails
+ * @property AuditData[] $data
  */
 class AuditEntry extends ActiveRecord
 {
@@ -114,7 +114,13 @@ class AuditEntry extends ActiveRecord
         $columns = ['entry_id', 'type', 'created', 'data'];
         $rows = [];
         $params = [];
-        $date = date('Y-m-d H:i:s');
+        if (isset(Yii::$app->params['db.date'])) { //allow user to use inbuilt query date functions NOW() or SYSDATE depending on database
+            $db_date_func = Yii::$app->params['db.date'];
+            $date = new Expression($db_date_func); //date('Y-m-d H:i:s');
+        } else {
+            $date = date('Y-m-d H:i:s');
+        }
+
         // Some database like postgres depend on the data being escaped correctly.
         // PDO can take care of this if you define the field as a LOB (Large OBject), but unfortunately Yii does threat values
         // for batch inserts the same way. This code adds a number of literals instead of the actual values
@@ -155,9 +161,9 @@ class AuditEntry extends ActiveRecord
 
         $this->route = $app->requestedAction ? $app->requestedAction->uniqueId : null;
         if ($request instanceof \yii\web\Request) {
-            $this->user_id        = Audit::getInstance()->getUserId();
-            $this->ip             = $request->userIP;
-            $this->ajax           = $request->isAjax;
+            $this->user_id = Audit::getInstance()->getUserId();
+            $this->ip = $request->userIP;
+            $this->ajax = $request->isAjax;
             $this->request_method = $request->method;
         } else if ($request instanceof \yii\console\Request) {
             $this->request_method = 'CLI';
@@ -189,12 +195,12 @@ class AuditEntry extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'             => Yii::t('audit', 'Entry ID'),
-            'created'        => Yii::t('audit', 'Created'),
-            'ip'             => Yii::t('audit', 'IP'),
-            'duration'       => Yii::t('audit', 'Duration'),
-            'user_id'        => Yii::t('audit', 'User'),
-            'memory_max'     => Yii::t('audit', 'Memory'),
+            'id' => Yii::t('audit', 'Entry ID'),
+            'created' => Yii::t('audit', 'Created'),
+            'ip' => Yii::t('audit', 'IP'),
+            'duration' => Yii::t('audit', 'Duration'),
+            'user_id' => Yii::t('audit', 'User'),
+            'memory_max' => Yii::t('audit', 'Memory'),
             'request_method' => Yii::t('audit', 'Request Method'),
         ];
     }
