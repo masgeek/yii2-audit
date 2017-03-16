@@ -114,12 +114,8 @@ class AuditEntry extends ActiveRecord
         $columns = ['entry_id', 'type', 'created', 'data'];
         $rows = [];
         $params = [];
-        if (isset(Yii::$app->params['db.date'])) { //allow user to use inbuilt query date functions NOW() or SYSDATE depending on database
-            $db_date_func = Yii::$app->params['db.date'];
-            $date = new Expression($db_date_func); //date('Y-m-d H:i:s');
-        } else {
-            $date = date('Y-m-d H:i:s');
-        }
+        $date = date('Y-m-d H:i:s');
+
 
         // Some database like postgres depend on the data being escaped correctly.
         // PDO can take care of this if you define the field as a LOB (Large OBject), but unfortunately Yii does threat values
@@ -225,4 +221,17 @@ class AuditEntry extends ActiveRecord
         return false;
     }
 
+
+    public function beforeSave($insert)
+    {
+
+        $date = new Expression('SYSDATE');
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->created = $date;
+            }
+            return true;
+        }
+        return false;
+    }
 }
