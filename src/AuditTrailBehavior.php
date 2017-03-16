@@ -50,8 +50,16 @@ class AuditTrailBehavior extends Behavior
      */
     public $dateFormat = 'Y-m-d H:i:s';
 
-    public $useDatabaseValue = true;
-    public $databaseDate = 'NOW()';
+    /**
+     * Indicates whether to use teh database inuilt date functions
+     * @var bool
+     */
+    public $useDatabaseValue = false;
+    /**
+     * Default date function is for MySQL NOW() Oracle should be SYSDATE
+     * @var string
+     */
+    public $databaseDateFunction = 'NOW()';
     /**
      * @var array
      */
