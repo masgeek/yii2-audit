@@ -1,10 +1,12 @@
 <?php
+
 namespace bedezign\yii2\audit;
 
 use Yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 use bedezign\yii2\audit\models\AuditTrail;
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
@@ -48,6 +50,8 @@ class AuditTrailBehavior extends Behavior
      */
     public $dateFormat = 'Y-m-d H:i:s';
 
+    public $useDatabaseValue = true;
+    public $databaseDate = 'NOW()';
     /**
      * @var array
      */
@@ -189,14 +193,14 @@ class AuditTrailBehavior extends Behavior
      */
     protected function cleanAttributesOverride($attributes)
     {
-        if (sizeof($this->override) > 0 && sizeof($attributes) >0) {
+        if (sizeof($this->override) > 0 && sizeof($attributes) > 0) {
             foreach ($this->override as $field => $queryParams) {
                 $newOverrideValues = $this->getNewOverrideValues($attributes[$field], $queryParams);
                 $saveField = \yii\helpers\ArrayHelper::getValue($queryParams, 'saveField', $field);
 
-                if (count($newOverrideValues) >1) {
+                if (count($newOverrideValues) > 1) {
                     $attributes[$saveField] = implode(', ',
-                                        \yii\helpers\ArrayHelper::map($newOverrideValues, $queryParams['returnField'], $queryParams['returnField'])
+                        \yii\helpers\ArrayHelper::map($newOverrideValues, $queryParams['returnField'], $queryParams['returnField'])
                     );
                 } elseif (count($newOverrideValues) == 1) {
                     $attributes[$saveField] = $newOverrideValues[0][$queryParams['returnField']];
@@ -216,8 +220,8 @@ class AuditTrailBehavior extends Behavior
         $query = new Query;
 
         $query->select($queryParams['returnField'])
-              ->from($queryParams['tableName'])
-              ->where([$queryParams['searchField'] => $searchFieldValue]);
+            ->from($queryParams['tableName'])
+            ->where([$queryParams['searchField'] => $searchFieldValue]);
 
         $rows = $query->all();
 
@@ -243,7 +247,7 @@ class AuditTrailBehavior extends Behavior
         $user_id = $this->getUserId();
         $model = $this->owner->className();
         $model_id = $this->getNormalizedPk();
-        $created = date($this->dateFormat);
+        $created = $this->useDatabaseValue ? new Expression($this->databaseDate) : date($this->dateFormat);
 
         $this->saveAuditTrail($action, $newAttributes, $oldAttributes, $entry_id, $user_id, $model, $model_id, $created);
     }
@@ -285,6 +289,7 @@ class AuditTrailBehavior extends Behavior
      */
     protected function saveAuditTrailDelete()
     {
+
         $audit = Audit::getInstance();
         $audit->getDb()->createCommand()->insert(AuditTrail::tableName(), [
             'action' => 'DELETE',
@@ -292,7 +297,7 @@ class AuditTrailBehavior extends Behavior
             'user_id' => $this->getUserId(),
             'model' => $this->owner->className(),
             'model_id' => $this->getNormalizedPk(),
-            'created' => date($this->dateFormat),
+            'created' => $this->useDatabaseValue ? new Expression($this->databaseDate) : date($this->dateFormat),
         ])->execute();
     }
 
