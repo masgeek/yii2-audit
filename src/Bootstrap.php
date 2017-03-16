@@ -35,7 +35,7 @@ class Bootstrap implements BootstrapInterface
             $app->i18n->translations['audit'] = [
                 'class'          => 'yii\i18n\PhpMessageSource',
                 'sourceLanguage' => 'en',
-                'basePath'       => '@fatelord/yii2/audit/messages',
+                'basePath'       => '@bedezign/yii2/audit/messages',
             ];
         }
     }
