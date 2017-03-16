@@ -1,5 +1,5 @@
 {
-    "name": "bedezign/yii2-audit",
+    "name": "fatelord/yii2-audit",
     "description": "Yii2 Audit records and displays web/cli requests, database changes, php/js errors and associated data.",
     "keywords": ["yii2", "audit", "trail", "logging"],
     "type": "yii2-extension",
@@ -19,6 +19,11 @@
             "name": "Marc Hollander",
             "homepage": "http://maruc.nl/",
             "email": "marchollander@gmail.com"
+        },
+             {
+            "name": "Sammy Barasa",
+            "homepage": "http://tsobu.co.ke/",
+            "email": "barsamms@gmail.com"
         }
     ],
     "require": {
