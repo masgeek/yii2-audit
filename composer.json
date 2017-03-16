@@ -39,6 +39,6 @@
         "psr-4": {"fatelord\\yii2\\audit\\": "src"}
     },
     "extra": {
-        "bootstrap": "bedezign\\yii2\\audit\\Bootstrap"
+        "bootstrap": "fatelord\\yii2\\audit\\Bootstrap"
     }
 }
