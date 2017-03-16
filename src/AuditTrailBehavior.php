@@ -255,7 +255,7 @@ class AuditTrailBehavior extends Behavior
         $user_id = $this->getUserId();
         $model = $this->owner->className();
         $model_id = $this->getNormalizedPk();
-        $created = $this->useDatabaseValue ? new Expression($this->databaseDate) : date($this->dateFormat);
+        $created = $this->useDatabaseValue ? new Expression($this->databaseDateFunction) : date($this->dateFormat);
 
         $this->saveAuditTrail($action, $newAttributes, $oldAttributes, $entry_id, $user_id, $model, $model_id, $created);
     }
@@ -305,7 +305,7 @@ class AuditTrailBehavior extends Behavior
             'user_id' => $this->getUserId(),
             'model' => $this->owner->className(),
             'model_id' => $this->getNormalizedPk(),
-            'created' => $this->useDatabaseValue ? new Expression($this->databaseDate) : date($this->dateFormat),
+            'created' => $this->useDatabaseValue ? new Expression($this->databaseDateFunction) : date($this->dateFormat),
         ])->execute();
     }
 
