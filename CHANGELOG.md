@@ -1,6 +1,6 @@
 # Changelog
 
-## DEV
+## DEV March 17, 2017
 * Enh [#196] Added ability to save dates using database inbuilt functions
 * Enh [#197] Added option to allow user to define date format when querying for audit trail ranges
 * Enh [#198] Changed CLOB and text fielsd to use long string to cater for oracle database
